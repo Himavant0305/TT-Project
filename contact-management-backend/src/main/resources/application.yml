@@ -4,7 +4,7 @@ spring:
   data:
     mongodb:
       # Override for Atlas: set MONGODB_URI to your connection string
-      uri: ${MONGODB_URI:mongodb://127.0.0.1:27017/contacts_db}
+      uri: ${MONGODB_URI:mongodb://127.0.0.1:27017/contacts_db?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000}
       auto-index-creation: true
 
 server:

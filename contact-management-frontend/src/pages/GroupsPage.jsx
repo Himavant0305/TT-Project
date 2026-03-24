@@ -265,6 +265,7 @@ export default function GroupsPage() {
                       <div key={c.id} className="group-member-item">
                         <div className="group-member-info">
                           <strong>{c.name}</strong>
+                          <span>{c.phone}</span>
                           <span>{c.email}</span>
                         </div>
                         <button type="button" className="btn btn-danger btn-sm" onClick={() => removeMember(c.id)}>

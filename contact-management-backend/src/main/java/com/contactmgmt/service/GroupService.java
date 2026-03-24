@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -157,15 +155,5 @@ public class GroupService {
         return raw == null ? "" : raw.trim();
     }
 
-    private ContactResponse toContactResponse(Contact c) {
-        return ContactResponse.builder()
-                .id(c.getId())
-                .name(c.getName())
-                .email(c.getEmail())
-                .phone(c.getPhone())
-                .address(c.getAddress())
-                .ownerId(c.getOwnerId())
-                .createdAt(c.getCreatedAt())
-                .build();
-    }
+
 }
