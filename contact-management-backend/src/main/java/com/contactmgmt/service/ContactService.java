@@ -26,9 +26,14 @@ public class ContactService {
     private final ContactGroupRepository groupRepository;
 
     public ContactResponse create(String ownerId, ContactRequest request) {
-        // Duplicate detection
-        if (contactRepository.existsByOwnerIdAndEmailIgnoreCase(ownerId, request.getEmail().trim())) {
-            throw new DuplicateResourceException("A contact with this email already exists");
+        // Duplicate detection by Name or Phone
+        String name = request.getName().trim();
+        if (contactRepository.existsByOwnerIdAndNameIgnoreCase(ownerId, name)) {
+            throw new DuplicateResourceException("A contact with this name already exists");
+        }
+        String phone = request.getPhone().trim();
+        if (contactRepository.existsByOwnerIdAndPhone(ownerId, phone)) {
+            throw new DuplicateResourceException("A contact with this phone number already exists");
         }
 
         Contact contact = Contact.builder()
@@ -65,15 +70,21 @@ public class ContactService {
         Contact contact = contactRepository.findByIdAndOwnerId(id, ownerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Contact not found"));
 
-        // Duplicate detection (skip if email unchanged)
-        String newEmail = request.getEmail().trim();
-        if (!contact.getEmail().equalsIgnoreCase(newEmail)
-                && contactRepository.existsByOwnerIdAndEmailIgnoreCase(ownerId, newEmail)) {
-            throw new DuplicateResourceException("A contact with this email already exists");
+        // Duplicate detection (skip if unchanged)
+        String newName = request.getName().trim();
+        if (!contact.getName().equalsIgnoreCase(newName)
+                && contactRepository.existsByOwnerIdAndNameIgnoreCase(ownerId, newName)) {
+            throw new DuplicateResourceException("A contact with this name already exists");
+        }
+
+        String newPhone = request.getPhone().trim();
+        if (!contact.getPhone().equals(newPhone)
+                && contactRepository.existsByOwnerIdAndPhone(ownerId, newPhone)) {
+            throw new DuplicateResourceException("A contact with this phone number already exists");
         }
 
         contact.setName(request.getName().trim());
-        contact.setEmail(newEmail);
+        contact.setEmail(request.getEmail().trim());
         contact.setPhone(request.getPhone().trim());
         contact.setAddress(request.getAddress() != null ? request.getAddress().trim() : "");
         return toResponse(contactRepository.save(contact));
